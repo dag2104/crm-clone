@@ -1,71 +1,70 @@
-import { useState, useEffect, useContext } from 'react'
-import { useNavigate, useParams } from 'react-router-dom'
-import axios from 'axios'
-import CategoriesContext from '../context'
+import { useState, useEffect, useContext } from "react";
+import { useNavigate, useParams } from "react-router-dom";
+import axios from "axios";
+import CategoriesContext from "../context";
 
 const TicketPage = ({ editMode }) => {
-
   const [formData, setFormData] = useState({
-    status: 'not started',
+    status: "not started",
     progress: 0,
     timestamp: new Date().toISOString(),
-  })
-  const { categories, setCategories } = useContext(CategoriesContext)
+  });
+  const { categories, setCategories } = useContext(CategoriesContext);
 
-  const navigate = useNavigate()
-  let { id } = useParams()
+  const navigate = useNavigate();
+  let { id } = useParams();
 
   const handleChange = (e) => {
-    const value = e.target.value
-    const name = e.target.name
+    const value = e.target.value;
+    const name = e.target.name;
 
     setFormData((prevState) => ({
       ...prevState,
       [name]: value,
-    }))
-  }
+    }));
+  };
 
   const handleSubmit = async (e) => {
-    e.preventDefault()
+    e.preventDefault();
     if (editMode) {
       const response = await axios.put(`http://localhost:8000/tickets/${id}`, {
         data: formData,
-      })
-      const success = response.status === 200
+      });
+      const success = response.status === 200;
       if (success) {
-        navigate('/')
+        navigate("/");
       }
     }
     if (!editMode) {
-      console.log('posting')
-      const response = await axios.post('http://localhost:8000/tickets', {
+      console.log("posting");
+      const response = await axios.post("http://localhost:8000/tickets", {
         formData,
-      })
-      const success = response.status === 200
+      });
+      const success = response.status === 200;
       if (success) {
-        navigate('/')
+        navigate("/");
       }
     }
-  }
+  };
 
   const fetchData = async () => {
-    const response = await axios.get(`http://localhost:8000/tickets/${id}`)
-    console.log('AAAAAA', response)
-    setFormData(response.data.data)
-  }
+    const response = await axios.get(`http://localhost:8000/tickets/${id}`);
+    console.log("AAAAAA", response);
+    setFormData(response.data.data);
+  };
 
   useEffect(() => {
     if (editMode) {
-      fetchData()
+      fetchData();
     }
-  }, [])
+  }, []);
 
-  console.log('EDITcategories', categories)
-  console.log('formData', formData.status)
-  console.log('formData.status', formData.status === 'stuck')
+  console.log("EDITcategories", categories);
+  console.log("formData", formData.status);
+  console.log("formData.status", formData.status === "stuck");
   return (
     <div className="ticket">
-      <h1>{editMode ? 'Update Your Ticket' : 'Create a Ticket'}</h1>
+      <h1>{editMode ? "Update Your Ticket" : "Create a Ticket"}</h1>
       <div className="ticket-container">
         <form onSubmit={handleSubmit}>
           <section>
@@ -96,7 +95,9 @@ const TicketPage = ({ editMode }) => {
               onChange={handleChange}
             >
               {categories?.map((category, _index) => (
-                <option value={category}>{category}</option>
+                <option key={_index} value={category}>
+                  {category}
+                </option>
               ))}
             </select>
 
@@ -177,20 +178,20 @@ const TicketPage = ({ editMode }) => {
                   value={formData.status}
                   onChange={handleChange}
                 >
-                  <option selected={formData.status == 'done'} value="done">
+                  <option selected={formData.status == "done"} value="done">
                     Done
                   </option>
                   <option
-                    selected={formData.status == 'working on it'}
+                    selected={formData.status == "working on it"}
                     value="working on it"
                   >
                     Working on it
                   </option>
-                  <option selected={formData.status == 'stuck'} value="stuck">
+                  <option selected={formData.status == "stuck"} value="stuck">
                     Stuck
                   </option>
                   <option
-                    selected={formData.status == 'not started'}
+                    selected={formData.status == "not started"}
                     value="not started"
                   >
                     Not Started
@@ -229,7 +230,7 @@ const TicketPage = ({ editMode }) => {
         </form>
       </div>
     </div>
-  )
-}
+  );
+};
 
-export default TicketPage
+export default TicketPage;
